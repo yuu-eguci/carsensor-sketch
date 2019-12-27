@@ -3,8 +3,9 @@
     <div class="content">
       <router-view/>
     </div>
+    <!-- NOTE: nav-bar は App.vue でいいのかな? -->
     <!-- NOTE: スマホアプリっぽいデザインにしたいので、 navbar を下に持ってきています。 -->
-    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+    <nav class="navbar fixed-bottom navbar-expand navbar-dark bg-dark">
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content"
         aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
