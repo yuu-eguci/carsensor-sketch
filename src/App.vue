@@ -9,21 +9,30 @@
         aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="nav-content">
+      <!-- NOTE: 左右を空けて等間隔にするため justify-content-around をつけ、全 nav-item に navbar-nav を割り振っています。 -->
+      <div class="collapse navbar-collapse justify-content-around" id="nav-content">
         <ul class="navbar-nav">
-          <li class="nav-item">
+          <li class="nav-item active">
             <router-link to="/" class="nav-link">トップ</router-link>
           </li>
+        </ul>
+        <ul class="navbar-nav">
           <li class="nav-item">
             <router-link to="/items" class="nav-link">検索</router-link>
           </li>
+        </ul>
+        <ul class="navbar-nav">
           <li class="nav-item">
             <router-link to="/item" class="nav-link">履歴</router-link>
           </li>
+        </ul>
+        <ul class="navbar-nav">
           <li class="nav-item">
             <!-- NOTE: SPA ではないページも作るつもりです。 -->
             <a class="nav-link" href="#">nonSPA</a>
           </li>
+        </ul>
+        <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link" href="#">nonSPA2</a>
           </li>
