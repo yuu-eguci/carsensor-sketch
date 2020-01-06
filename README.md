@@ -22,3 +22,7 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## GitHub Pages
+
+https://yuu-eguci.github.io/carsensor-sketch/
