@@ -205,7 +205,7 @@
 
 <script>
   export default {
-    name: 'Top'
+    name: 'TopView'
   }
 </script>
 
