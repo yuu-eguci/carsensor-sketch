@@ -13,7 +13,7 @@ The site is static files in `docs/` served by GitHub Pages. Pages does not run N
   - https://nodejs.org/en/blog/vulnerability/october-2026-security-releases
   - https://nodejs.org/dist/index.json
   - https://raw.githubusercontent.com/nodejs/Release/main/schedule.json (20.x EOL 2026-04-30, 24.x supported until 2028-04-30)
-- The build no longer needs `--openssl-legacy-provider`. Vue CLI 4 / webpack 4 failed with `ERR_OSSL_EVP_UNSUPPORTED` on Node 22/24; Vue CLI 5 / webpack 5 builds without it. `tests/` fails if the flag shows up again.
+- The build no longer needs `--openssl-legacy-provider`. Vue CLI 4 / webpack 4 failed with `ERR_OSSL_EVP_UNSUPPORTED` on Node 22/24; The current Vite 8 build runs without it; the preceding Vue CLI 5 / webpack 5 migration had also removed that requirement. `tests/` fails if the flag shows up again.
 
 ## npm dependencies
 

@@ -56,8 +56,8 @@ yarn lint
 yarn test
 ```
 
-### Customize configuration
-See [Configuration Reference](https://vite.dev/config/).
+### ビルド設定
+[Vite の設定](https://vite.dev/config/) を参照。
 
 ## GitHub Pages
 
