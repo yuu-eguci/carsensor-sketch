@@ -17,32 +17,25 @@ The site is static files in `docs/` served by GitHub Pages. Pages does not run N
 
 ## npm dependencies
 
-Method (same before and after): `yarn audit --summary` with yarn 1.22.22 on a copy of `package.json` + `yarn.lock`.
+Method (same every time): `yarn audit --summary` with yarn 1.22.22 on a copy of `package.json` + `yarn.lock`.
 
-| | before (5df6582) | after |
-|---|---|---|
-| all | 636 (critical 55 / high 319 / moderate 208 / low 54) | 33 (critical 0 / high 11 / moderate 21 / low 1) |
-| `dependencies` only | 1 low | 1 low |
-
-How: Vue CLI 4 → 5.0.9, `yarn.lock` moved off the dead `registry.npm.taobao.org` to `registry.yarnpkg.com`, and only the build tooling was re-resolved to the latest versions inside its ranges. `vue` 2.6.11, `vue-router` 3.1.6, `core-js` 3.6.1 stay the same. No `resolutions`, no audit ignores.
-
-### What is left and why
-
-The 33 rows are 21 unique advisories; `yarn audit` counts each path. The table counts unique advisories.
-
-| package (severity) | path | impact | why not fixed |
+| | 5df6582 (Vue CLI 4) | ddc02bc (Vue CLI 5) | now (Vue 3 + Vite) |
 |---|---|---|---|
-| vue (low, GHSA-5j4c-8p2g-v4jx / CVE-2024-9506) | `vue` | ReDoS in the template compiler's `parseHTML`. The shipped bundle uses `vue/dist/vue.runtime.esm.js` (Vue CLI alias `vue$`), and the bundle source maps contain no compiler sources, so the vulnerable code is not shipped. | No 2.x fix. Vue 2 is EOL. |
-| vue-template-compiler (moderate, GHSA-g3ch-rx76-35fx) | `vue-template-compiler` | Client-side XSS when compiling untrusted templates. Here it only compiles our own `.vue` files at build time. | No 2.x fix. |
-| webpack-dev-server 4 (6 moderate), webpack-dev-middleware (high), sockjs → uuid (moderate), selfsigned → node-forge (high) | `@vue/cli-service > webpack-dev-server > ...` | `yarn serve` only: source exposure / CSRF / DoS while the dev server runs. compose binds it to 127.0.0.1. Not in the built site. | `@vue/cli-service@5` requires webpack-dev-server ^4. Fixes are in 5.2.x. |
-| postcss 7 (2 high, 3 moderate), postcss-selector-parser (moderate) | `@vue/cli-service > @vue/component-compiler-utils > postcss`, `@vue/vue-loader-v15 > ...` | Build-time CSS processing of our own styles. | Vue 2 SFC compiler utils pin postcss 7. |
-| serialize-javascript (high, moderate) | `@vue/cli-service > copy-webpack-plugin > serialize-javascript` | Build-time only, no untrusted input. | Pinned by copy-webpack-plugin 9 in Vue CLI 5. |
-| braces (high), cross-spawn (high) | `@vue/cli-plugin-eslint > eslint-webpack-plugin > micromatch`, `@vue/cli-plugin-eslint > yorkie > execa` | Lint tooling only. Installs use `--ignore-scripts`, so yorkie does not touch git hooks. | Pinned inside `@vue/cli-plugin-eslint@5`. |
+| all | 636 (critical 55 / high 319 / moderate 208 / low 54) | 33 (high 11 / moderate 21 / low 1) | 0 |
+| `dependencies` only | 1 low | 1 low | 0 |
 
-Also: eslint 8.57.1 is EOL upstream, but `@vue/cli-plugin-eslint@5` does not support eslint 9.
+How:
 
-Clearing the rest needs leaving Vue CLI (for example Vite + Vue 2.7, or Vue 3). That was out of scope for this change.
+- ddc02bc: Vue CLI 4 → 5.0.9, `yarn.lock` moved off the dead `registry.npm.taobao.org` to `registry.yarnpkg.com`.
+- now: Vue 2.6 + Vue CLI 5 → Vue 3.5 + Vue Router 5 + Vite 8 + ESLint 10. Vue CLI, webpack, webpack-dev-server, Babel, `vue-template-compiler`, `core-js` and eslint-plugin-vue 9 are gone, and with them every path of the 33 findings (all of them came from those packages or from Vue 2).
+- No `resolutions`, no audit ignores. CI runs `yarn audit` and fails on any finding.
+
+The shipped bundle uses Vue's runtime-only build; `tests/build.test.js` checks the source maps for Vue compiler sources.
+
+## Published site
+
+`docs/` was not rebuilt in these changes, so GitHub Pages still serves the old Vue 2.6.11 runtime bundle (no template compiler inside). It changes only when `yarn build` output is committed to `docs/`.
 
 ## Browser-side (not npm)
 
-`public/index.html` loads jQuery 3.4.1, Popper 1.14.7, Bootstrap 4.3.1 and Font Awesome 4.7.0 from CDNs without SRI. Not changed here.
+`index.html` loads jQuery 3.4.1, Popper 1.14.7, Bootstrap 4.3.1 and Font Awesome 4.7.0 from CDNs without SRI. Not changed here.

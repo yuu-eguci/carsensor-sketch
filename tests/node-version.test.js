@@ -50,7 +50,7 @@ test('running Node satisfies the pinned version', () => {
 })
 
 test('build setup does not rely on the legacy OpenSSL provider', () => {
-  for (const file of ['package.json', 'vue.config.js', 'Dockerfile', 'compose.yaml', '.github/workflows/ci.yml']) {
+  for (const file of ['package.json', 'vite.config.mjs', 'Dockerfile', 'compose.yaml', '.github/workflows/ci.yml']) {
     assert.doesNotMatch(read(file), /openssl-legacy-provider/, file)
   }
 })
