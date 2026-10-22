@@ -1,14 +1,10 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Top from './views/Top.vue'
 import Items from './views/Items.vue'
 import Item from './views/Item.vue'
 
-Vue.use(VueRouter)
-
-export default new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+export default createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',

@@ -6,3 +6,4 @@ services:
     volumes:
       - ./src:/app/src:ro
       - ./public:/app/public:ro
+      - ./index.html:/app/index.html:ro

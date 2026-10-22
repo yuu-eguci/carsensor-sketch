@@ -1,7 +1,7 @@
 carsensor-sketch
 ===
 
-Vue.js 2 と Bootstrap 4 で、カーセンサーアプリっぽい画面を真似したもの。
+Vue.js 3 と Bootstrap 4 で、カーセンサーアプリっぽい画面を真似したもの。
 
 - Docker: 対応!
 - Node: 24.22.1
@@ -19,7 +19,7 @@ docker compose up --build
 lint とテストはこれ。
 
 ```
-docker compose run --rm app yarn lint --no-fix
+docker compose run --rm app yarn lint
 docker compose run --rm app yarn test
 ```
 
@@ -44,9 +44,9 @@ yarn serve
 yarn build
 ```
 
-`docs/` に出力される。GitHub Pages はここを配信してるので、公開を更新したいときだけ実行する。確認だけなら `yarn build --dest dist`。
+`docs/` に出力される。GitHub Pages はここを配信してるので、公開を更新したいときだけ実行する。確認だけなら `yarn build --outDir dist`。
 
-### Lints and fixes files
+### Lints files
 ```
 yarn lint
 ```
@@ -56,8 +56,8 @@ yarn lint
 yarn test
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### ビルド設定
+[Vite の設定](https://vite.dev/config/) を参照。
 
 ## GitHub Pages
 
