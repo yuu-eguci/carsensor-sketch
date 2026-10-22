@@ -32,6 +32,11 @@ test('Vite builds for GitHub Pages into docs/', async () => {
   assert.equal(config.server.port, 8080)
 })
 
+test('App.vue does not repeat the mount element', () => {
+  // Vue 3 は #app の中にマウントするので、App.vue 側に id="app" があると二重になる。
+  assert.doesNotMatch(read('src/App.vue'), /id="app"/)
+})
+
 test('index.html loads the Vue entry and keeps the CDN tags', () => {
   const html = read('index.html')
 
