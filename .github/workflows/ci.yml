@@ -20,8 +20,9 @@ jobs:
           node-version-file: .nvmrc
           cache: yarn
       - run: yarn install --frozen-lockfile --ignore-scripts
-      - run: yarn lint --no-fix
+      - run: yarn lint
       - run: yarn test
+      - run: yarn audit
 
   docker:
     runs-on: ubuntu-latest
@@ -30,5 +31,5 @@ jobs:
         with:
           persist-credentials: false
       - run: docker compose build
-      - run: docker compose run --rm app yarn lint --no-fix
+      - run: docker compose run --rm app yarn lint
       - run: docker compose run --rm app yarn test

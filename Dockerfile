@@ -10,4 +10,4 @@ RUN yarn install --frozen-lockfile --ignore-scripts && yarn cache clean
 COPY --chown=node:node . .
 
 EXPOSE 8080
-CMD ["yarn", "serve"]
+CMD ["yarn", "serve", "--host", "0.0.0.0"]
