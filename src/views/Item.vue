@@ -5,7 +5,7 @@
 
 <script>
   export default {
-    name: 'Item'
+    name: 'ItemView'
   }
 </script>
 
