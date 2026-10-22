@@ -1,19 +1,20 @@
-# carsensor-sketch
+carsensor-sketch
+===
+
+Vue.js 2 と Bootstrap 4 で、カーセンサーアプリっぽい画面を真似したもの。
 
 - Docker: 対応!
 - Node: 24.22.1
 - Linter: ESLint
 - Test: node:test
 
-Vue.js 2 と Bootstrap 4 で、カーセンサーアプリっぽい画面を真似してみたやつ。
-
-## クイックスタート
+## パッと実行してみたい
 
 ```
 docker compose up --build
 ```
 
-http://localhost:8080/carsensor-sketch/ で見れる。
+[ローカル画面](http://localhost:8080/carsensor-sketch/) で試せる。
 
 lint とテストはこれ。
 
