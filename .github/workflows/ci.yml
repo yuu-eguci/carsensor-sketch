@@ -20,6 +20,7 @@ jobs:
           node-version-file: .nvmrc
           cache: yarn
       - run: yarn install --frozen-lockfile --ignore-scripts
+      - run: yarn typecheck
       - run: yarn lint
       - run: yarn test
       - run: yarn audit
@@ -31,5 +32,6 @@ jobs:
         with:
           persist-credentials: false
       - run: docker compose build
+      - run: docker compose run --rm app yarn typecheck
       - run: docker compose run --rm app yarn lint
       - run: docker compose run --rm app yarn test

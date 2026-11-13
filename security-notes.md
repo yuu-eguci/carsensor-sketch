@@ -1,6 +1,6 @@
 # Security notes
 
-Checked on 2026-10-22.
+Checked on 2026-11-13.
 
 ## Where Node runs
 
@@ -19,15 +19,16 @@ The site is static files in `docs/` served by GitHub Pages. Pages does not run N
 
 Method (same every time): `yarn audit --summary` with yarn 1.22.22 on a copy of `package.json` + `yarn.lock`.
 
-| | 5df6582 (Vue CLI 4) | ddc02bc (Vue CLI 5) | now (Vue 3 + Vite) |
-|---|---|---|---|
-| all | 636 (critical 55 / high 319 / moderate 208 / low 54) | 33 (high 11 / moderate 21 / low 1) | 0 |
-| `dependencies` only | 1 low | 1 low | 0 |
+| | 5df6582 (Vue CLI 4) | ddc02bc (Vue CLI 5) | ff1297a (Vue 3 + Vite) | now (+ TypeScript) |
+|---|---|---|---|---|
+| all | 636 (critical 55 / high 319 / moderate 208 / low 54) | 33 (high 11 / moderate 21 / low 1) | 0 (2026-10-22) → 2 moderate (2026-11-13) | 5 moderate |
+| `dependencies` only | 1 low | 1 low | 0 | 0 |
 
 How:
 
 - ddc02bc: Vue CLI 4 → 5.0.9, `yarn.lock` moved off the dead `registry.npm.taobao.org` to `registry.yarnpkg.com`.
-- now: Vue 2.6 + Vue CLI 5 → Vue 3.5 + Vue Router 5 + Vite 8 + ESLint 10. Vue CLI, webpack, webpack-dev-server, Babel, `vue-template-compiler`, `core-js` and eslint-plugin-vue 9 are gone, and with them every path of the 33 findings (all of them came from those packages or from Vue 2).
+- ff1297a: Vue 2.6 + Vue CLI 5 → Vue 3.5 + Vue Router 5 + Vite 8 + ESLint 10. Vue CLI, webpack, webpack-dev-server, Babel, `vue-template-compiler`, `core-js` and eslint-plugin-vue 9 are gone, and with them every path of the 33 findings (all of them came from those packages or from Vue 2).
+- now: devDependencies に TypeScript 6.0 / vue-tsc / typescript-eslint を追加。5 件はすべて minimatch 10.2.6 の [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) (2026-10-30 公開、修正版は 11.0.1 以降) で、経路は eslint 経由が 2 件、typescript-eslint 経由が 3 件。ff1297a の 2 件も同じもの。eslint 10.14.0 と typescript-eslint 8.72.2 (どちらも 2026-11-13 時点の最新) が minimatch ^10 を要求するので、`resolutions` なしでは直せない。lint 用の開発ツールだけで、配信物 (`dependencies`) には入らない。
 - No `resolutions`, no audit ignores. CI runs `yarn audit` and fails on any finding.
 
 The shipped bundle uses Vue's runtime-only build; `tests/build.test.js` checks the source maps for Vue compiler sources.
