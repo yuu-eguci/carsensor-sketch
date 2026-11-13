@@ -56,9 +56,6 @@
   </nav>
 </template>
 
-<script>
-</script>
-
 <style>
   /* icon + text リンクのための style です。 */
   .nav-link {

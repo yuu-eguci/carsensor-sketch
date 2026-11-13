@@ -1,10 +1,11 @@
 carsensor-sketch
 ===
 
-Vue.js 3 と Bootstrap 4 で、カーセンサーアプリっぽい画面を真似したもの。
+Vue.js 3 (TypeScript) と Bootstrap 4 で、カーセンサーアプリっぽい画面を真似したもの。
 
 - Docker: 対応!
 - Node: 24.22.1
+- TypeScript: 6.0 (型チェックは vue-tsc)
 - Linter: ESLint
 - Test: node:test
 
@@ -16,9 +17,10 @@ docker compose up --build
 
 [ローカル画面](http://localhost:8080/carsensor-sketch/) で試せる。
 
-lint とテストはこれ。
+型チェック・lint・テストはこれ。
 
 ```
+docker compose run --rm app yarn typecheck
 docker compose run --rm app yarn lint
 docker compose run --rm app yarn test
 ```
@@ -45,6 +47,13 @@ yarn build
 ```
 
 `docs/` に出力される。GitHub Pages はここを配信してるので、公開を更新したいときだけ実行する。確認だけなら `yarn build --outDir dist`。
+
+### Type-checks files
+```
+yarn typecheck
+```
+
+`src/` の `.ts` と `.vue` を strict で型チェックする。`yarn build` / `yarn serve` は型チェックしないので、これで確認する。
 
 ### Lints files
 ```
