@@ -21,15 +21,25 @@ Method (same every time): `yarn audit --summary` with yarn 1.22.22 on a copy of 
 
 | | 5df6582 (Vue CLI 4) | ddc02bc (Vue CLI 5) | ff1297a (Vue 3 + Vite) | now (+ TypeScript) |
 |---|---|---|---|---|
-| all | 636 (critical 55 / high 319 / moderate 208 / low 54) | 33 (high 11 / moderate 21 / low 1) | 0 (2026-10-22) → 2 moderate (2026-11-13) | 5 moderate |
+| all | 636 (critical 55 / high 319 / moderate 208 / low 54) | 33 (high 11 / moderate 21 / low 1) | 0 (2026-10-22) → 2 moderate (2026-11-13) | 0 |
 | `dependencies` only | 1 low | 1 low | 0 | 0 |
 
 How:
 
 - ddc02bc: Vue CLI 4 → 5.0.9, `yarn.lock` moved off the dead `registry.npm.taobao.org` to `registry.yarnpkg.com`.
 - ff1297a: Vue 2.6 + Vue CLI 5 → Vue 3.5 + Vue Router 5 + Vite 8 + ESLint 10. Vue CLI, webpack, webpack-dev-server, Babel, `vue-template-compiler`, `core-js` and eslint-plugin-vue 9 are gone, and with them every path of the 33 findings (all of them came from those packages or from Vue 2).
-- now: devDependencies に TypeScript 6.0 / vue-tsc / typescript-eslint を追加。5 件はすべて minimatch 10.2.6 の [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) (2026-10-30 公開、修正版は 11.0.1 以降) で、経路は eslint 経由が 2 件、typescript-eslint 経由が 3 件。ff1297a の 2 件も同じもの。eslint 10.14.0 と typescript-eslint 8.72.2 (どちらも 2026-11-13 時点の最新) が minimatch ^10 を要求するので、`resolutions` なしでは直せない。lint 用の開発ツールだけで、配信物 (`dependencies`) には入らない。
-- No `resolutions`, no audit ignores. CI runs `yarn audit` and fails on any finding.
+- ff1297a の 2 件 (2026-11-13 時点): minimatch 10.2.6 の [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) (2026-10-30 公開、修正版は 11.0.1 以降)。経路は eslint と @eslint/config-array。
+- now: devDependencies に TypeScript 6.0 / vue-tsc / typescript-eslint を追加 (typescript-eslint 経由でも同じ minimatch を使う)。minimatch は `resolutions` で ^11.0.5 (11.0.8) にして 0 件。
+- No audit ignores. CI runs `yarn audit` and fails on any finding.
+
+## `resolutions`
+
+`package.json` の `resolutions` は minimatch の 1 件だけ。`tests/lockfile.test.js` が、それ以外を足していないことと、`yarn.lock` に 11 未満の minimatch がないことを見ている。
+
+- 理由: GHSA-g3hv-75wg-m249 の修正版は minimatch 11 系だけ (10 系への backport なし)。eslint 10.14.0 / @eslint/config-array 0.23.5 / typescript-eslint 8.72.2 (2026-11-13 時点のリリース版の最新) は ^10 を要求している。
+- ^11.0.5 は upstream の修正と同じ範囲。eslint (eslint/eslint#21492) と @eslint/config-array (eslint/rewrite#535) は main で ^11.0.5 に上げ済み (未リリース)。typescript-eslint も canary で ^11.0.1。
+- 互換性: 3 つとも使っているのは `new Minimatch(pattern, { dot, flipNegate })`、`.match(path[, partial])`、`.pattern`、`minimatch(path, pattern, { dot })` だけで、11 でも残っている (11 で消えたのは `makeRe` や `AST` など)。Node は 11 の engines (`20 || >=22`) を満たす。10.2.6 と 11.0.8 で、`eslint .` の対象ファイルと検出結果、CLI の glob 指定 (`**`、`{a,b}`、該当なし、ignores 済みの `docs/`) の結果が同じなのを確認した。
+- 外す条件: eslint・@eslint/config-array・typescript-eslint のリリース版がどれも minimatch ^11 を要求するようになったら、`resolutions` とテストの該当部分を消す。
 
 The shipped bundle uses Vue's runtime-only build; `tests/build.test.js` checks the source maps for Vue compiler sources.
 
